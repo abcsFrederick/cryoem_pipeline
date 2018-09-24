@@ -35,7 +35,7 @@ class Project():
         if self.frames > 1:
             self._ensure_directory(str(
                 pathlib.Path(self.paths['local_root']).joinpath(
-                pathlib.Path('stack'))))
+                    pathlib.Path('stack'))))
         self.workflow.MIN_IMPORT_INTERVAL = \
             self.workflow.MIN_IMPORT_INTERVAL / self.frames
 

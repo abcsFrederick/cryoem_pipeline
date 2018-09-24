@@ -42,6 +42,8 @@ class Config():
 
     @staticmethod
     def _load_template(path):
+        '''Loads the Scipion JSON template from path.
+        '''
         if not os.path.exists(path):
             raise FileNotFoundError(
                 errno.ENOENT,
@@ -59,6 +61,10 @@ class Config():
 
     @staticmethod
     def _write_template(data, path, force):
+        '''Writes the JSON template out to the provided path.
+
+        Should only be called after filling the template with data.
+        '''
         if os.path.exists(path) and not force:
             raise FileExistsError(
                 errno.EEXIST,
@@ -73,6 +79,8 @@ class Config():
 
     @staticmethod
     def _template_insert_values(template, config):
+        '''Inserts parameters into the scipion JSON template.
+        '''
         imp = template[0]
         ctf = template[2]
         imp['filesPath'] = str(pathlib.Path(
@@ -97,6 +105,9 @@ class Config():
 
     @staticmethod
     def _get_config_values(config):
+        '''Prompt the user for any expected configuration values that have
+        not already been set.
+        '''
         config.project_name = (
             config.project_name or
             input('Project name: '))
@@ -142,10 +153,24 @@ class Config():
             '/mnt/nas/Scipion/'+config.project_name+'.json')
 
     def validate_config(self):
+        '''Validate the class configuration.
+        '''
         return self._validate_config(self)
 
     @staticmethod
     def _validate_config(config):
+        '''Validate the provided application configuration.
+
+        This is always intended to be called *before* the Scipion configuration
+        is written and Scipion process started. Failing to do so will result in
+        untested configurations being allowed to kick off scipion processes of
+        unknown validity.
+
+        The numeric validations here are for sanity-check purposes and will
+        not protect the user from making bad but potentially reasonable
+        choices. File path checks are more firm, making sure that things like
+        the gain reference and target directories exist.
+        '''
         def _v_wrap(test, msg):
             if test:
                 print(msg, file=sys.stderr)
