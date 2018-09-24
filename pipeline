@@ -36,6 +36,10 @@ def _parse_arguments():
                         help='A globbing pattern to match files for import and\
                         processing. Usually matches the files directly output\
                         by the camera.')
+    parser.add_argument('--dst-directory', '-d',
+                        required=False,
+                        type=str,
+                        help='Destination directory for Globus transfer.')
     parser.add_argument('--frames', '-f',
                         required=False,
                         type=int,
@@ -77,7 +81,8 @@ if __name__ == '__main__':
                       pattern=config.source_pattern or args.src_pattern,
                       frames=config.frames_to_stack or args.frames or 1,
                       scipion_config=(None if args.no_scipion
-                                      else config.scipion_config_path))
+                                      else config.scipion_config_path),
+                      globus_root=args.dst_directory)
     logger.info('Parameters')
     for val in vars(config):
         logger.info(': '.join((val, str(getattr(config, val)))))

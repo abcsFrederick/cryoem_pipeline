@@ -10,6 +10,7 @@ import os
 import pathlib
 import time
 
+GLOBUS_ROOT = '/mnt/NCEF-CryoEM/'
 ATC_GLOBUS_ENDPOINT = '67dace28-311f-11e8-b8f8-0ac6873fc732'
 MOAB_GLOBUS_ENDPOINT = 'dabdccc3-6d04-11e5-ba46-22000b92c6ec'
 logger = logging.getLogger(__name__)
@@ -19,15 +20,18 @@ class Project():
     '''Overarching project controller
     '''
 
-    def __init__(self, project, pattern, frames=1, scipion_config=None):
+    def __init__(self, project, pattern, frames=1, scipion_config=None,
+                 globus_root=None):
         self.project = project
         self.workflow = Workflow()
         self.awh = AsyncWorkflowHelper()
         self.monitor = FilePatternMonitor(pattern, recursive=True)
+        if globus_root is None:
+            globus_root = GLOBUS_ROOT
         self.paths = {
                 'local_root': '/tmp/' + str(project),
                 'storage_root': '/mnt/nas/' + str(project),
-                'globus_root': '/mnt/NCEF-CryoEM/' + str(project),
+                'globus_root': globus_root.rstrip('/') + '/' + str(project),
                 'scipion_config': scipion_config
                 }
         self._ensure_root_directories()
